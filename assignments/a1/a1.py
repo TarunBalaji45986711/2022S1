@@ -6,6 +6,7 @@ nltk.download('gutenberg')
 from sklearn.feature_extraction.text import TfidfVectorizer
 import collections
 
+
 # Task 1 (2 marks)
 def count_pos(document, pos):
     """Return the number of occurrences of words with a given part of speech. To find the part of speech, use 
@@ -15,7 +16,17 @@ def count_pos(document, pos):
     >>> count_pos('austen-sense.txt', 'VERB')
     25074
     """
-    return 0
+
+    sents = [nltk.word_tokenize(s) for s in nltk.sent_tokenize(nltk.corpus.gutenberg.raw(document))]
+    tagged_sents = nltk.pos_tag_sents(sents, tagset='universal') 
+    
+    counts = 0
+    for d in tagged_sents:
+        for idn in d:
+            same = idn[1]
+            if same == pos:
+                counts+=1
+    return counts
 
 # Task 2 (2 marks)
 def get_top_stem_bigrams(document, n):
@@ -27,7 +38,14 @@ def get_top_stem_bigrams(document, n):
     >>> get_top_stem_bigrams('austen-sense.txt',4)
     [(',', 'and'), ('.', "''"), (';', 'and'), (',', "''")]
     """
-    return []
+    sents = [nltk.word_tokenize(s) for s in nltk.sent_tokenize(nltk.corpus.gutenberg.raw(document))]
+    s = nltk.PorterStemmer()
+    words_stem = [[s.stem(w) for w in sent] for sent in sents]
+    bigrams = []
+    for k in words_stem:
+        bigrams += nltk.bigrams([p for p in k])
+    c = collections.Counter(bigrams)
+    return[b for b, f in c.most_common(n)]
 
 
 # Task 3 (2 marks)
@@ -40,6 +58,7 @@ def get_same_stem(document, word):
     >>> get_same_stem('austen-sense.txt','respect')[:5]
     [('respect', 22), ('respectability', 1), ('respectable', 14), ('respectably', 1), ('respected', 3)]
     """
+    
     return []
 
 # Task 4 (2 marks)
