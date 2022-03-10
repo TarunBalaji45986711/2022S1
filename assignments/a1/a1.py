@@ -57,9 +57,15 @@ def get_same_stem(document, word):
     [('Respect', 2), ('respect', 41), ('respectability', 1), ('respectable', 20), ('respectably', 1)]
     >>> get_same_stem('austen-sense.txt','respect')[:5]
     [('respect', 22), ('respectability', 1), ('respectable', 14), ('respectably', 1), ('respected', 3)]
-    """
-    
-    return []
+    """        
+    word_token = nltk.word_tokenize(nltk.corpus.gutenberg.raw(document))
+    s = nltk.PorterStemmer()
+    word_st = s.stem(word)
+    stem_list = []
+    for b in word_token:
+        if s.stem(b) == word_st and (b, word_token.count(b)) not in stem_list:
+            stem_list.append((b, word_token.count(b)))
+    return sorted(stem_list, key=lambda x: x[0])
 
 # Task 4 (2 marks)
 def most_frequent_after_pos(document, pos):
@@ -71,7 +77,15 @@ def most_frequent_after_pos(document, pos):
     >>> most_frequent_after_pos('austen-sense.txt','NOUN')
     [('Elinor', 673)]
     """
-    return []
+    sents = [nltk.word_tokenize(s) for s in nltk.sent_tokenize(nltk.corpus.gutenberg.raw(document))]
+    tagged_sents = nltk.pos_tag_sents(sents, tagset="universal")
+    in_pos = []
+    for u in tagged_sents:
+        bigram = nltk.bigrams(u)
+        in_pos += [word2 for (word1, posi1), (word2, posi2) in bigram if posi1 == pos]
+    c = collections.Counter(in_pos)
+    
+    return [c.most_common(1)]
 
 # Task 5 (2 marks)
 def get_word_tfidf(text):
@@ -85,6 +99,8 @@ def get_word_tfidf(text):
     >>> get_word_tfidf('Brutus is a honourable person')
     [('brutus', 0.8405129362379974), ('honourable', 0.4310718596448824), ('person', 0.32819971943754456)]
     """
+
+
     return []
 
 
