@@ -99,9 +99,15 @@ def get_word_tfidf(text):
     >>> get_word_tfidf('Brutus is a honourable person')
     [('brutus', 0.8405129362379974), ('honourable', 0.4310718596448824), ('person', 0.32819971943754456)]
     """
-
-
-    return []
+    tfidf = TfidfVectorizer(input = 'content', stop_words = 'english')
+    guten = [nltk.corpus.gutenberg.raw(a) for a in nltk.corpus.gutenberg.fileids()]
+    s = nltk.PorterStemmer()
+    guten_ste = s.stem(text)
+    a_guten_ste = guten_ste.split(',')
+    tfidf.fit(a_guten_ste)
+    results=tfidf.fit_transform([text]).toarray()
+    w= tfidf.get_feature_names()
+    return [text,results]
 
 
 # DO NOT MODIFY THE CODE BELOW
